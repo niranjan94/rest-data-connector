@@ -8,6 +8,7 @@ import VueResource from 'vue-resource';
 import UUID from 'vue-uuid';
 import Notifications from 'vue-notification';
 import TreeView from "vue-json-tree-view"
+import { initTableau } from './libs/tableau/init';
 
 Vue.config.productionTip = false;
 
@@ -24,3 +25,5 @@ new Vue({
   template: '<App/>',
   components: {App}
 });
+
+initTableau();

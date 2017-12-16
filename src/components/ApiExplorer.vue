@@ -30,7 +30,7 @@
       </div>
       <hr>
 
-      <data-view :open-data-view="openDataView" :result="result" />
+      <data-view v-if="openDataView" :open-data-view="openDataView" :result="result" />
 
       <b-alert variant="danger"
                dismissible
@@ -67,6 +67,7 @@
   import CustomHeaders from './rest/CustomHeaders';
   import { setInterceptor } from '../libs/interceptor';
   import DataView from './rest/DataView';
+  import { merge } from 'lodash-es';
 
   export default {
     components: {
@@ -77,9 +78,12 @@
     name: 'ApiExplorer',
     data() {
       let lastApiSpecUrl = localStorage.getItem('lastApiSpecUrl') || '';
-      setInterceptor();
+      let lastRequestConfig = localStorage.getItem('lastRequestConfig');
+      if (lastRequestConfig) {
+        lastRequestConfig = JSON.parse(lastRequestConfig);
+      }
+      setInterceptor(lastRequestConfig);
       return {
-        msg: 'Welcome to Your Vue.js App',
         apiSpecUrl: lastApiSpecUrl,
         apiSpec: {},
         endpoints: [],
@@ -88,14 +92,14 @@
         specLoading: false,
         result: {},
         openDataView: false,
-        requestConfig: {
+        requestConfig: merge({
           authorizationMode: 'none',
           baseUrl: '',
           username: '',
           password: '',
           token: '',
           headers: []
-        }
+        }, lastRequestConfig || {})
       };
     },
     methods: {

@@ -15,6 +15,16 @@
                       v-model="pathToExport">
         </b-form-input>
       </b-form-group>
+      <b-form-group label="Name for the connector:"
+                    label-for="connectorName"
+                    label-size="sm">
+        <b-form-input id="connectorName"
+                      type="text"
+                      size="sm"
+                      v-model="connectorName">
+        </b-form-input>
+      </b-form-group>
+
     </b-form>
   </b-modal>
 
@@ -22,14 +32,15 @@
 
 <script>
   import { keys, get } from 'lodash-es';
-  import { sendToTableau } from '../../libs/tableau';
+  import { sendToTableau } from '../../libs/tableau/send';
 
   export default {
     name: 'DataView',
     props: ['openDataView', 'result'],
     data() {
       return {
-        pathToExport: ''
+        pathToExport: '',
+        connectorName: this.result.definition.summary
       };
     },
     methods: {
@@ -48,7 +59,7 @@
           });
           return;
         }
-        sendToTableau(dataToExport);
+        sendToTableau(dataToExport, this.connectorName, cleanedPath);
       }
     },
     computed: {
