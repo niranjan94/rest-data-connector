@@ -5,10 +5,10 @@
       <b-form @submit="onSubmit"
               @reset="onReset"
               autocomplete="off">
-        <b-form-group label="Swagger API Url:"
+        <b-form-group label="API Spec URL:"
                       label-for="apiSpecUrl"
                       label-size="sm"
-                      description="Enter the full URL to the swagger API definition json file">
+                      description="Enter the full URL to the API definition file (Supports Swagger 2.0)">
           <b-input-group>
             <b-form-input id="apiSpecUrl"
                           type="url"
@@ -19,14 +19,18 @@
                           required></b-form-input>
             <b-input-group-button>
               <b-button type="submit" :disabled="specLoading">Load API</b-button>
+              <b-button type="reset" variant="outline" :disabled="specLoading">&times;</b-button>
             </b-input-group-button>
           </b-input-group>
         </b-form-group>
       </b-form>
       <div v-if="endpoints.length">
-        <url-auth :request-config.sync="requestConfig"></url-auth>
+        <url-auth :request-config.sync="requestConfig"/>
+        <custom-headers :request-headers.sync="requestConfig.headers"/>
       </div>
       <hr>
+
+      <data-view :open-data-view="openDataView" :result="result" />
 
       <b-alert variant="danger"
                dismissible
@@ -44,14 +48,15 @@
 
       <div role="tablist">
         <api-item v-for="(value) in endpoints"
+                  @result="onResult"
                   :key="value.id"
                   :definition="value"
                   :request-config="requestConfig">
-
         </api-item>
       </div>
-
     </div>
+
+
   </div>
 </template>
 
@@ -59,27 +64,37 @@
   import { normalize } from '../libs/normalize';
   import ApiItem from './ApiItem';
   import UrlAuth from './rest/UrlAuth';
+  import CustomHeaders from './rest/CustomHeaders';
+  import { setInterceptor } from '../libs/interceptor';
+  import DataView from './rest/DataView';
 
   export default {
     components: {
+      DataView,
+      CustomHeaders,
       UrlAuth,
       ApiItem },
     name: 'ApiExplorer',
     data() {
+      let lastApiSpecUrl = localStorage.getItem('lastApiSpecUrl') || '';
+      setInterceptor();
       return {
         msg: 'Welcome to Your Vue.js App',
-        apiSpecUrl: 'http://127.0.0.1:8080/spec.json',
+        apiSpecUrl: lastApiSpecUrl,
         apiSpec: {},
         endpoints: [],
         unsupportedApiAlert: false,
         generalAlert: false,
         specLoading: false,
+        result: {},
+        openDataView: false,
         requestConfig: {
           authorizationMode: 'none',
           baseUrl: '',
           username: '',
           password: '',
-          token: ''
+          token: '',
+          headers: []
         }
       };
     },
@@ -90,7 +105,7 @@
         this.baseUrl = '';
         this.unsupportedApiAlert = false;
         this.specLoading = true;
-        this.$http.get(this.apiSpecUrl).then(response => {
+        this.$http.get(this.apiSpecUrl, { before: () => {} }).then(response => {
           this.apiSpec = response.body;
           this.specLoading = false;
           const { endpoints, baseUrl } = normalize(response.body);
@@ -98,6 +113,7 @@
             this.unsupportedApiAlert = true;
             return;
           }
+          localStorage.setItem('lastApiSpecUrl', this.apiSpecUrl);
           this.endpoints = endpoints;
           this.requestConfig.baseUrl = baseUrl;
         }, response => {
@@ -106,8 +122,22 @@
           this.generalAlert = `HTTP ${response.status} - ${response.statusText}`;
         });
       },
-      onReset() {
-
+      onReset(e) {
+        e.preventDefault();
+        Object.assign(this.$data, this.$options.data());
+      },
+      onResult(result) {
+        console.log(result);
+        this.openDataView = true;
+        this.result = result;
+      }
+    },
+    watch: {
+      requestConfig: {
+        handler (requestConfig) {
+          setInterceptor(requestConfig);
+        },
+        deep: true
       }
     }
   };

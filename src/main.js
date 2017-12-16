@@ -6,12 +6,16 @@ import router from './router';
 import BootstrapVue from 'bootstrap-vue';
 import VueResource from 'vue-resource';
 import UUID from 'vue-uuid';
+import Notifications from 'vue-notification';
+import TreeView from "vue-json-tree-view"
 
 Vue.config.productionTip = false;
 
+Vue.use(Notifications);
 Vue.use(UUID);
 Vue.use(VueResource);
 Vue.use(BootstrapVue);
+Vue.use(TreeView);
 
 /* eslint-disable no-new */
 new Vue({

@@ -2,15 +2,13 @@
   <b-card no-body class="mb-1">
     <b-card-header header-tag="header" class="p-1" role="tab">
       <b-btn class="endpoint-btn" block href="#" v-b-toggle="uuid" variant="link">
-        <b-badge variant="success" class="method-badge">GET</b-badge>
+        <b-badge variant="success" class="method-badge">{{method}}</b-badge>
         <strong>{{definition.endpoint}}</strong>
         <span class="text-muted" style="float: right">{{definition.summary}}</span>
       </b-btn>
     </b-card-header>
     <b-collapse :id="uuid" accordion="my-accordion" role="tabpanel">
       <b-card-body>
-
-
         <b-form @submit="onSubmit" autocomplete="off">
           <table v-if="definition.parameters.length" class="table table-sm parameters-table">
             <thead>
@@ -26,9 +24,17 @@
             <tr v-for="(parameter) in definition.parameters">
               <th scope="row">{{parameter.name}}</th>
               <td>
-                <b-form-select v-if="parameter.enum" v-model="parameter.value" :options="parameter.enum" size="sm"
+                <b-form-select v-if="parameter.enum"
+                               v-model="parameter.value"
+                               :options="parameter.enum"
+                               size="sm"
+                               :disabled="requestInProgress"
                                :required="parameter.required"></b-form-select>
-                <b-form-input v-else :type="parameter.htmlType" size="sm" v-model.trim="parameter.value"
+                <b-form-input v-else
+                              :type="parameter.htmlType"
+                              size="sm"
+                              v-model.trim="parameter.value"
+                              :disabled="requestInProgress"
                               :required="parameter.required"></b-form-input>
               </td>
               <td>{{parameter.description}}</td>
@@ -37,8 +43,8 @@
             </tr>
             </tbody>
           </table>
-          <b-button type="submit" size="sm" variant="secondary">
-            Get Data
+          <b-button type="submit" size="sm" variant="secondary" :disabled="requestInProgress">
+            {{requestInProgress ? 'Loading ...' : 'Get data'}}
           </b-button>
         </b-form>
       </b-card-body>
@@ -47,17 +53,43 @@
 </template>
 
 <script>
+  import { makeRequest } from '../libs/make-request';
+  import { getErrorMessage } from '../libs/errors';
+
   export default {
     name: 'ApiItem',
     props: ['url', 'definition', 'requestConfig'],
     data() {
       return {
-        uuid: this.$uuid.v4()
+        method: 'get',
+        uuid: this.$uuid.v4(),
+        requestInProgress: false
       };
     },
     methods: {
       onSubmit(e) {
         e.preventDefault();
+        this.requestInProgress = true;
+        makeRequest(this.method, this.definition.endpoint, this.definition.parameters)
+          .then((response) => {
+            console.log(response);
+            this.requestInProgress = false;
+            this.$emit('result', {
+              data: response.body,
+              definition: this.definition,
+              requestConfig: this.requestConfig,
+              url: this.url
+            })
+          })
+          .catch((e) => {
+            console.error(e);
+            this.requestInProgress = false;
+            this.$notify({
+              type: 'error',
+              title: `Request failed`,
+              text: `<strong>Endpoint:</strong> ${this.definition.endpoint}<br><strong>Reason:</strong> ${getErrorMessage(e.body)}`
+            });
+          });
       }
     }
   };
@@ -72,6 +104,7 @@
 
   .method-badge {
     margin-right: 8px;
+    text-transform: uppercase;
   }
 
   .card-body {

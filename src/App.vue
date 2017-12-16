@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <nav-bar></nav-bar>
-    <router-view></router-view>
+    <notifications position="bottom right"/>
+    <nav-bar/>
+    <router-view/>
   </div>
 </template>
 
@@ -22,4 +23,16 @@
   #app {
 
   }
+
+  * {
+    font-family: 'Lato', sans-serif;
+  }
+
+  .form-group {
+    margin-bottom: 4px;
+  }
+  label {
+    font-weight: 600 !important;
+  }
+
 </style>

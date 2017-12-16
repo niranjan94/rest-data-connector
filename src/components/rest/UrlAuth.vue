@@ -47,7 +47,7 @@
       </b-col>
     </b-row>
 
-    <b-row v-if="config.authorizationMode === 'basic'">
+    <b-row v-if="config.authorizationMode === 'basic' || config.authorizationMode === 'expanded_token'">
       <b-col md="6">
         <b-form-group label="Username:"
                       label-size="sm"
@@ -56,17 +56,17 @@
                         type="text"
                         size="sm"
                         v-model.trim="config.username"
-                        required>
+                        :required="config.authorizationMode === 'basic'">
           </b-form-input>
         </b-form-group>
 
       </b-col>
       <b-col md="6">
-        <b-form-group label="Password:"
+        <b-form-group :label="config.authorizationMode === 'basic' ? 'Password:' : 'Token:'"
                       label-size="sm"
                       label-for="password">
           <b-form-input id="password"
-                        type="password"
+                        :type="config.authorizationMode === 'basic' ? 'password' : 'text'"
                         size="sm"
                         v-model.trim="config.password"
                         required>
@@ -91,7 +91,8 @@
           { text: 'None', value: 'none' },
           { text: 'Basic HTTP Auth', value: 'basic' },
           { text: 'OAuth Bearer Token', value: 'bearer' },
-          { text: 'Basic Token', value: 'token' }
+          { text: 'Basic Token', value: 'token' },
+          { text: 'Expanded Token', value: 'expanded_token' }
         ]
       };
     },
@@ -101,11 +102,16 @@
           this.$emit('update:requestConfig', config)
         },
         deep: true
+      },
+      requestConfig: {
+        handler (requestConfig) {
+          this.config = requestConfig;
+        },
+        deep: true
       }
     }
   };
 </script>
 
 <style scoped>
-
 </style>
