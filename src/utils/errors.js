@@ -12,24 +12,24 @@ import { isArray, isNumber, isObjectLike, isString } from 'lodash-es';
  * @return {string}
  */
 export const getErrorMessage = (input, defaultError = null) => {
-  if(!input) {
+  if (!input) {
     return defaultError;
   }
-  if(isString(input) || isNumber(input)) {
+  if (isString(input) || isNumber(input)) {
     let error = input;
     try {
       error = JSON.parse(input);
     } catch (ignored) { /* ignored */
     }
-    if(isString(error) || isNumber(isNumber)) {
+    if (isString(error) || isNumber(isNumber)) {
       return error;
     }
     return getErrorMessage(error);
   }
 
-  if(!isArray(input) && isObjectLike(input)) {
+  if (!isArray(input) && isObjectLike(input)) {
     input = input.error ? input.error : (input.message ? input.message : input);
-  } else if(isArray(input)) {
+  } else if (isArray(input)) {
     return input.join('. ');
   }
 

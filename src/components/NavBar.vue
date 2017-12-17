@@ -1,13 +1,14 @@
 <template>
-  <b-navbar toggleable="md" type="dark" variant="info">
-    <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-    <b-navbar-brand href="#">REST Data Connector</b-navbar-brand>
-    <b-collapse is-nav id="nav_collapse">
-      <b-navbar-nav>
-        <router-link to="/" class="nav-link">Dashboard</router-link>
-      </b-navbar-nav>
-    </b-collapse>
-  </b-navbar>
+  <div>
+    <b-navbar type="dark" variant="dark" fixed="top">
+      <b-container class="d-flex justify-content-between">
+        <router-link to="/" class="navbar-brand">
+          <img src="/static/branding/network_white.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+          REST Data Connector
+        </router-link>
+      </b-container>
+    </b-navbar>
+  </div>
 </template>
 
 <script>
@@ -20,5 +21,10 @@
 </script>
 
 <style scoped>
-
+  .navbar-brand > img {
+    margin-right: 8px;
+  }
+  .list-unstyled a {
+    text-decoration: none;
+  }
 </style>

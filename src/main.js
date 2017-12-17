@@ -7,8 +7,8 @@ import BootstrapVue from 'bootstrap-vue';
 import VueResource from 'vue-resource';
 import UUID from 'vue-uuid';
 import Notifications from 'vue-notification';
-import TreeView from "vue-json-tree-view"
-import { initTableau } from './libs/tableau/init';
+import TreeView from 'vue-json-tree-view';
+import { initTableau } from './utils/tableau/init';
 
 Vue.config.productionTip = false;
 
@@ -20,10 +20,10 @@ Vue.use(TreeView);
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  el         : '#app',
   router,
-  template: '<App/>',
-  components: {App}
+  template   : '<App/>',
+  components : { App }
 });
 
 initTableau();

@@ -82,12 +82,12 @@
   import { cloneDeep } from 'lodash-es';
 
   export default {
-    name: 'UrlAuth',
-    props: ['requestConfig'],
+    name  : 'UrlAuth',
+    props : ['requestConfig'],
     data() {
       return {
-        config:  cloneDeep(this.requestConfig || {}),
-        authorizationModes: [
+        config             : cloneDeep(this.requestConfig || {}),
+        authorizationModes : [
           { text: 'None', value: 'none' },
           { text: 'Basic HTTP Auth', value: 'basic' },
           { text: 'OAuth Bearer Token', value: 'bearer' },
@@ -98,13 +98,13 @@
     },
     watch: {
       config: {
-        handler (config) {
-          this.$emit('update:requestConfig', config)
+        handler(config) {
+          this.$emit('update:requestConfig', config);
         },
         deep: true
       },
       requestConfig: {
-        handler (requestConfig) {
+        handler(requestConfig) {
           this.config = requestConfig;
         },
         deep: true

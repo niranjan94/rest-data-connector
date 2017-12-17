@@ -2,14 +2,12 @@ import Vue from 'vue';
 import { isFunction } from 'lodash-es';
 import urlJoin from 'url-join';
 
-export const setInterceptor = (requestConfig) => {
+export const setInterceptor = requestConfig => {
   if (requestConfig) {
     localStorage.setItem('lastRequestConfig', JSON.stringify(requestConfig));
   }
   requestConfig = requestConfig || {};
-  console.log('requestConfig', requestConfig);
   Vue.http.interceptor.before = function(request, next) {
-    console.log('requestConfig', requestConfig, request);
     if (isFunction(request.before)) {
       request.before.call(this, request);
     } else {
@@ -39,7 +37,7 @@ export const setInterceptor = (requestConfig) => {
         case 'expanded_token':
           let headerValue = `Token token="${requestConfig.password}"`;
           if (requestConfig.username && requestConfig.username.trim() !== '') {
-            headerValue = `Token token="${requestConfig.password.trim()}", username="${requestConfig.username.trim()}"`
+            headerValue = `Token token="${requestConfig.password.trim()}", username="${requestConfig.username.trim()}"`;
           }
           request.headers.set('Authorization', headerValue);
           break;

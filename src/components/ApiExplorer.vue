@@ -61,11 +61,11 @@
 </template>
 
 <script>
-  import { normalize } from '../libs/normalize';
+  import { normalize } from '../utils/normalize';
   import ApiItem from './ApiItem';
   import UrlAuth from './rest/UrlAuth';
   import CustomHeaders from './rest/CustomHeaders';
-  import { setInterceptor } from '../libs/interceptor';
+  import { setInterceptor } from '../utils/interceptor';
   import DataView from './rest/DataView';
   import { merge } from 'lodash-es';
 
@@ -84,21 +84,21 @@
       }
       setInterceptor(lastRequestConfig);
       return {
-        apiSpecUrl: lastApiSpecUrl,
-        apiSpec: {},
-        endpoints: [],
-        unsupportedApiAlert: false,
-        generalAlert: false,
-        specLoading: false,
-        result: {},
-        openDataView: false,
-        requestConfig: merge({
-          authorizationMode: 'none',
-          baseUrl: '',
-          username: '',
-          password: '',
-          token: '',
-          headers: []
+        apiSpecUrl          : lastApiSpecUrl,
+        apiSpec             : {},
+        endpoints           : [],
+        unsupportedApiAlert : false,
+        generalAlert        : false,
+        specLoading         : false,
+        result              : {},
+        openDataView        : false,
+        requestConfig       : merge({
+          authorizationMode : 'none',
+          baseUrl           : '',
+          username          : '',
+          password          : '',
+          token             : '',
+          headers           : []
         }, lastRequestConfig || {})
       };
     },
@@ -113,7 +113,7 @@
           this.apiSpec = response.body;
           this.specLoading = false;
           const { endpoints, baseUrl } = normalize(response.body);
-          if(!endpoints) {
+          if (!endpoints) {
             this.unsupportedApiAlert = true;
             return;
           }
@@ -138,7 +138,7 @@
     },
     watch: {
       requestConfig: {
-        handler (requestConfig) {
+        handler(requestConfig) {
           setInterceptor(requestConfig);
         },
         deep: true

@@ -66,21 +66,21 @@
   import { cloneDeep } from 'lodash-es';
 
   export default {
-    name: 'CustomHeaders',
-    props: ['requestHeaders'],
+    name  : 'CustomHeaders',
+    props : ['requestHeaders'],
     data() {
       return {
-        headers:  cloneDeep(this.requestHeaders || []),
-        tempValue: '',
-        tempName: ''
+        headers   : cloneDeep(this.requestHeaders || []),
+        tempValue : '',
+        tempName  : ''
       };
     },
     methods: {
       onSubmit(e) {
         e.preventDefault();
         this.headers.push({
-          name: this.tempName,
-          value: this.tempValue
+          name  : this.tempName,
+          value : this.tempValue
         });
         this.tempName = '';
         this.tempValue = '';
@@ -91,13 +91,13 @@
     },
     watch: {
       headers: {
-        handler (headers) {
-          this.$emit('update:requestHeaders', headers)
+        handler(headers) {
+          this.$emit('update:requestHeaders', headers);
         },
         deep: true
       },
       requestHeaders: {
-        handler (requestHeaders) {
+        handler(requestHeaders) {
           this.headers = requestHeaders;
         },
         deep: true

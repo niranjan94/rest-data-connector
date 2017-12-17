@@ -8,14 +8,14 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'Dashboard',
-      component: Dashboard
+      path      : '/',
+      name      : 'Dashboard',
+      component : Dashboard
     },
     {
-      path: '/api-explorer',
-      name: 'ApiExplorer',
-      component: ApiExplorer
+      path      : '/api-explorer',
+      name      : 'ApiExplorer',
+      component : ApiExplorer
     }
   ]
 });

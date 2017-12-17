@@ -32,15 +32,15 @@
 
 <script>
   import { keys, get } from 'lodash-es';
-  import { sendToTableau } from '../../libs/tableau/send';
+  import { sendToTableau } from '../../utils/tableau/send';
 
   export default {
-    name: 'DataView',
-    props: ['openDataView', 'result'],
+    name  : 'DataView',
+    props : ['openDataView', 'result'],
     data() {
       return {
-        pathToExport: '',
-        connectorName: this.result.definition.summary
+        pathToExport  : '',
+        connectorName : this.result.definition.summary
       };
     },
     methods: {
@@ -53,9 +53,9 @@
         }
         if (!dataToExport) {
           this.$notify({
-            type: 'error',
-            title: 'Invalid data path',
-            text: `<code>${this.pathToExport}</code>&nbsp;&nbsp;is invalid. Try again.`
+            type  : 'error',
+            title : 'Invalid data path',
+            text  : `<code>${this.pathToExport}</code>&nbsp;&nbsp;is invalid. Try again.`
           });
           return;
         }
@@ -63,15 +63,15 @@
       }
     },
     computed: {
-      options: function () {
+      options() {
         if (keys(this.result.data) > 10 || this.result.data.length > 10) {
           return {
             maxDepth: 0
-          }
+          };
         }
         return {
           maxDepth: 1
-        }
+        };
       }
     },
     watch: {}

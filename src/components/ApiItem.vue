@@ -53,17 +53,17 @@
 </template>
 
 <script>
-  import { makeRequest } from '../libs/make-request';
-  import { getErrorMessage } from '../libs/errors';
+  import { makeRequest } from '../utils/make-request';
+  import { getErrorMessage } from '../utils/errors';
 
   export default {
-    name: 'ApiItem',
-    props: ['url', 'definition', 'requestConfig'],
+    name  : 'ApiItem',
+    props : ['url', 'definition', 'requestConfig'],
     data() {
       return {
-        method: 'get',
-        uuid: this.$uuid.v4(),
-        requestInProgress: false
+        method            : 'get',
+        uuid              : this.$uuid.v4(),
+        requestInProgress : false
       };
     },
     methods: {
@@ -71,23 +71,23 @@
         e.preventDefault();
         this.requestInProgress = true;
         makeRequest(this.method, this.definition.endpoint, this.definition.parameters)
-          .then((response) => {
+          .then(response => {
             console.log(response);
             this.requestInProgress = false;
             this.$emit('result', {
-              data: response.body,
-              definition: this.definition,
-              requestConfig: this.requestConfig,
-              url: this.url
-            })
+              data          : response.body,
+              definition    : this.definition,
+              requestConfig : this.requestConfig,
+              url           : this.url
+            });
           })
-          .catch((e) => {
+          .catch(e => {
             console.error(e);
             this.requestInProgress = false;
             this.$notify({
-              type: 'error',
-              title: `Request failed`,
-              text: `<strong>Endpoint:</strong> ${this.definition.endpoint}<br><strong>Reason:</strong> ${getErrorMessage(e.body)}`
+              type  : 'error',
+              title : 'Request failed',
+              text  : `<strong>Endpoint:</strong> ${this.definition.endpoint}<br><strong>Reason:</strong> ${getErrorMessage(e.body)}`
             });
           });
       }

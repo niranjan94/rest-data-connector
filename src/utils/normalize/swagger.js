@@ -1,14 +1,14 @@
 import { forOwn, keys, sortBy } from 'lodash-es';
 import urlJoin from 'url-join';
 
-export const sharedStart = (array) => {
+export const sharedStart = array => {
   let A = array.concat().sort(),
-    a1 = A[0], a2 = A[A.length - 1], L = a1.length, i = 0;
+      a1 = A[0], a2 = A[A.length - 1], L = a1.length, i = 0;
   while (i < L && a1.charAt(i) === a2.charAt(i)) i++;
   return a1.substring(0, i);
 };
 
-export const normalizeSwagger2p0 = (data) => {
+export const normalizeSwagger2p0 = data => {
   let endpoints = [];
   const base = sharedStart(keys(data.paths));
   forOwn(data.paths, (value, key) => {
@@ -29,18 +29,18 @@ export const normalizeSwagger2p0 = (data) => {
       return parameter;
     });
     endpoints.push({
-      endpoint: key.replace(base, ''),
+      endpoint   : key.replace(base, ''),
       base,
-      parameters: get.parameters,
-      summary: get.summary,
-      id: get.operationId
+      parameters : get.parameters,
+      summary    : get.summary,
+      id         : get.operationId
     });
   });
 
   const scheme = data.schemes.includes('https') ? 'https' : 'http';
 
   return {
-    endpoints: sortBy(endpoints, ['endpoint']),
-    baseUrl: urlJoin(`${scheme}://${data.host}`, data.basePath, base)
+    endpoints : sortBy(endpoints, ['endpoint']),
+    baseUrl   : urlJoin(`${scheme}://${data.host}`, data.basePath, base)
   };
 };
