@@ -9,8 +9,12 @@ import UUID from 'vue-uuid';
 import Notifications from 'vue-notification';
 import TreeView from 'vue-json-tree-view';
 import { initTableau } from './utils/tableau/init';
+import { sync } from 'vuex-router-sync';
+import store from './store';
 
 Vue.config.productionTip = false;
+
+sync(store, router);
 
 Vue.use(Notifications);
 Vue.use(UUID);
@@ -22,6 +26,7 @@ Vue.use(TreeView);
 new Vue({
   el         : '#app',
   router,
+  store,
   template   : '<App/>',
   components : { App }
 });

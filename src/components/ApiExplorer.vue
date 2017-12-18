@@ -2,6 +2,7 @@
   <div>
     <div class="container">
       <br>
+      <not-tableau-alert/>
       <b-form @submit="onSubmit"
               @reset="onReset"
               autocomplete="off">
@@ -32,16 +33,18 @@
 
       <data-view v-if="openDataView" :open-data-view="openDataView" :result="result" />
 
+      <!--suppress PointlessBooleanExpressionJS -->
       <b-alert variant="danger"
                dismissible
-               :show="unsupportedApiAlert"
+               :show="!!unsupportedApiAlert"
                @dismissed="unsupportedApiAlert=false">
         The API spec is unsupported. Only Swagger 2.0 spec is supported at this point.
       </b-alert>
 
+      <!--suppress PointlessBooleanExpressionJS -->
       <b-alert variant="danger"
                dismissible
-               :show="generalAlert"
+               :show="!!generalAlert"
                @dismissed="generalAlert=false">
         {{generalAlert}}
       </b-alert>
@@ -68,9 +71,11 @@
   import { setInterceptor } from '../utils/interceptor';
   import DataView from './rest/DataView';
   import { merge } from 'lodash-es';
+  import NotTableauAlert from './NotTableauAlert';
 
   export default {
     components: {
+      NotTableauAlert,
       DataView,
       CustomHeaders,
       UrlAuth,
@@ -108,6 +113,7 @@
         this.endpoints = [];
         this.baseUrl = '';
         this.unsupportedApiAlert = false;
+        this.generalAlert = false;
         this.specLoading = true;
         this.$http.get(this.apiSpecUrl, { before: () => {} }).then(response => {
           this.apiSpec = response.body;
@@ -121,9 +127,14 @@
           this.endpoints = endpoints;
           this.requestConfig.baseUrl = baseUrl;
         }, response => {
+          console.error(response);
           this.unsupportedApiAlert = false;
           this.specLoading = false;
-          this.generalAlert = `HTTP ${response.status} - ${response.statusText}`;
+          if (response.status > 0) {
+            this.generalAlert = `HTTP ${response.status} - ${response.statusText}`;
+          } else {
+            this.generalAlert = 'Request failed.';
+          }
         });
       },
       onReset(e) {

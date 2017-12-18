@@ -9,6 +9,7 @@
       </div>
     </section>
     <div class="container">
+      <not-tableau-alert/>
       <b-card-group deck class="mb-3">
         <b-card header="Generic REST API" class="text-center clickable" @click="open('rest')">
           <p class="card-text">
@@ -17,7 +18,7 @@
         </b-card>
         <b-card header="Swagger 2.0" class="text-center clickable" @click="open('swagger_2')">
           <p class="card-text">
-            Swagger&trade; is a project used to describe and document RESTful APIs.
+            Swagger is a project used to describe and document RESTful APIs.
             The Swagger specification defines a set of files required to describe such an API.
           </p>
         </b-card>
@@ -62,11 +63,13 @@
 
 <script>
   import router from '../router';
+  import NotTableauAlert from './NotTableauAlert';
 
   export default {
+    components: { NotTableauAlert },
     name: 'Dashboard',
     data() {
-      return {};
+      return { };
     },
     methods: {
       open(what) {

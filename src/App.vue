@@ -12,7 +12,7 @@
           <i class="fab fa-github"></i>&nbsp;
           <a class="text-muted" href="https://github.com/niranjan94/rest-data-connector" target="_blank">niranjan94/rest-data-connector</a>
           <span class="separator">|</span>
-          Licensed under the <a class="text-muted" href="https://www.gnu.org/licenses/gpl-3.0.txt" target="_blank">GNU General Public License v3.0</a>
+          Open sourced under the <a class="text-muted" href="https://www.gnu.org/licenses/gpl-3.0.txt" target="_blank">GNU General Public License v3.0</a>
         </span>
       </div>
     </footer>
@@ -57,6 +57,7 @@
 
   .router-view {
     margin-top: 56px;
+    padding-bottom: 20px;
   }
 
   * {

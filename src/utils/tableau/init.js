@@ -1,5 +1,6 @@
 import { json } from 'generate-schema';
 import { forOwn, camelCase, mapValues } from 'lodash-es';
+import store from '../../store';
 
 const schemaMap = {
   number  : tableau.dataTypeEnum.float,
@@ -26,6 +27,12 @@ const getInitData = () => {
 
 export const initTableau = () => {
   const connector = tableau.makeConnector();
+
+  connector.init = function(callback) {
+    store.commit('SET_IN_TABLEAU');
+    window.inTableau = true;
+    callback();
+  };
 
   connector.getSchema = function(callback) {
     const {
@@ -86,6 +93,10 @@ export const initTableau = () => {
     table.appendRows(tableData);
     callback();
   };
-
   tableau.registerConnector(connector);
+  setTimeout(() => {
+    if (!window.inTableau) {
+      store.commit('SET_NOT_IN_TABLEAU');
+    }
+  }, 100);
 };

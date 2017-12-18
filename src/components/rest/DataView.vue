@@ -1,5 +1,10 @@
 <template>
-  <b-modal size="lg" v-model="openDataView" @ok="onOkay" title="Export Data">
+  <b-modal size="lg"
+           v-model="openDataView"
+           @ok="onOkay"
+           title="Export Data"
+           :ok-disabled="!inTableau"
+           :ok-title="inTableau ? 'Load into Tableau' : 'Run connector from tableau to load'">
     <code>{{result.definition.endpoint}}</code> - <span class="text-muted">{{result.definition.summary}}</span>
     <hr>
     <tree-view :data="result.data" :options="options"/>
@@ -8,7 +13,7 @@
       <b-form-group label="Path to export:"
                     label-for="pathToExport"
                     label-size="sm"
-                    description="Enter the path to export to Tableau (eg. <code>root.data</code>, <code>root.meta</code>, <code>root</code>, <code>root.0</code>)">
+                    description="Enter the path to load into Tableau (eg. <code>root.data</code>, <code>root.meta</code>, <code>root</code>, <code>root.0</code>)">
         <b-form-input id="pathToExport"
                       type="text"
                       size="sm"
@@ -63,6 +68,9 @@
       }
     },
     computed: {
+      inTableau() {
+        return this.$store.state.inTableau;
+      },
       options() {
         if (keys(this.result.data) > 10 || this.result.data.length > 10) {
           return {
