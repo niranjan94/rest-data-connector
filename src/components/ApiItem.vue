@@ -72,7 +72,6 @@
         this.requestInProgress = true;
         makeRequest(this.method, this.definition.endpoint, this.definition.parameters)
           .then(response => {
-            console.log(response);
             this.requestInProgress = false;
             this.$emit('result', {
               data          : response.body,

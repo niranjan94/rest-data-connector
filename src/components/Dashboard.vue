@@ -10,74 +10,45 @@
     </section>
     <div class="container">
       <not-tableau-alert/>
-      <b-card-group deck class="mb-3">
-        <b-card header="Generic REST API" class="text-center clickable" @click="open('rest')">
+      <b-card-group v-for="(supportedSpecs, index) in chunkedSupportedSpecs" deck :key="index" class="mb-3">
+        <b-card v-for="spec in supportedSpecs"
+                :key="spec.identifier"
+                :header="spec.title"
+                class="text-center"
+                :class="{clickable: spec.enabled, 'text-muted': !spec.enabled, 'not-clickable': !spec.enabled}"
+                @click="spec.enabled ? open(spec.link) : open()">
           <p class="card-text">
-            Connect to any REST API Service that provides a JSON (JavaScript Object Notation) response.
+            {{spec.description}}
           </p>
-        </b-card>
-        <b-card header="Swagger 2.0" class="text-center clickable" @click="open('swagger_2')">
-          <p class="card-text">
-            Swagger is a project used to describe and document RESTful APIs.
-            The Swagger specification defines a set of files required to describe such an API.
-          </p>
-        </b-card>
-        <b-card header="Open API 3.0"  class="text-muted text-center not-clickable">
-          <p class="card-text">The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to RESTful APIs </p>
-          <p class="card-text">
+          <p class="card-text" v-if="!spec.enabled">
             <small>~ Coming soon ~</small>
           </p>
         </b-card>
       </b-card-group>
-      <b-card-group deck class="mb-3">
-        <b-card header="API Blueprint" class="text-muted text-center not-clickable">
-          <p class="card-text">
-            API Blueprint is a powerful high-level API description language for web APIs. API Blueprint is simple and accessible to everybody involved in the API lifecycle.
-          </p>
-          <p class="card-text">
-            <small>~ Coming soon ~</small>
-          </p>
-        </b-card>
-        <b-card header="Swagger 1.0" class="text-muted text-center not-clickable">
-          <p class="card-text">
-            The initial release of the Swagger (currently known as the OpenAPI) specification.
-          </p>
-          <p class="card-text">
-            <small>~ Coming soon ~</small>
-          </p>
-        </b-card>
-        <b-card header="RAML"  class="text-muted text-center not-clickable">
-          <p class="card-text">
-            RESTful API Modeling Language is a YAML-based language for describing RESTful APIs. It provides all the information necessary to describe RESTful or practically RESTful APIs
-          </p>
-          <p class="card-text">
-            <small>~ Coming soon ~</small>
-          </p>
-        </b-card>
-      </b-card-group>
-
     </div>
-
   </div>
 </template>
 
 <script>
   import router from '../router';
   import NotTableauAlert from './NotTableauAlert';
+  import { supportedSpecs } from '../utils/specs';
+  import { chunk } from 'lodash-es';
 
   export default {
-    components: { NotTableauAlert },
-    name: 'Dashboard',
+    components : { NotTableauAlert },
+    name       : 'Dashboard',
     data() {
-      return { };
+      return {
+        chunkedSupportedSpecs: chunk(supportedSpecs, 3)
+      };
     },
     methods: {
-      open(what) {
-        switch (what) {
-          case 'swagger_2':
-            router.push('api-explorer');
-            break;
+      open(link) {
+        if (!link) {
+          return;
         }
+        router.push(link);
       }
     }
   };

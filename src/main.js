@@ -11,6 +11,11 @@ import TreeView from 'vue-json-tree-view';
 import { initTableau } from './utils/tableau/init';
 import { sync } from 'vuex-router-sync';
 import store from './store';
+import fontawesome from '@fortawesome/fontawesome';
+import { faSpinner, faGlobe } from '@fortawesome/fontawesome-free-solid';
+import { faGithub } from '@fortawesome/fontawesome-free-brands';
+
+fontawesome.library.add(faGithub, faSpinner, faGlobe);
 
 Vue.config.productionTip = false;
 

@@ -1,66 +1,62 @@
 <template>
-  <div>
-    <div class="container">
-      <br>
-      <not-tableau-alert/>
-      <b-form @submit="onSubmit"
-              @reset="onReset"
-              autocomplete="off">
-        <b-form-group label="API Spec URL:"
-                      label-for="apiSpecUrl"
-                      label-size="sm"
-                      description="Enter the full URL to the API definition file (Supports Swagger 2.0)">
-          <b-input-group>
-            <b-form-input id="apiSpecUrl"
-                          type="url"
-                          size="sm"
-                          placeholder="http://domain.com/api/swagger.json"
-                          v-model.trim="apiSpecUrl"
-                          autocomplete="off"
-                          required></b-form-input>
-            <b-input-group-button>
-              <b-button type="submit" :disabled="specLoading">Load API</b-button>
-              <b-button type="reset" variant="outline" :disabled="specLoading">&times;</b-button>
-            </b-input-group-button>
-          </b-input-group>
-        </b-form-group>
-      </b-form>
-      <div v-if="endpoints.length">
-        <url-auth :request-config.sync="requestConfig"/>
-        <custom-headers :request-headers.sync="requestConfig.headers"/>
-      </div>
-      <hr>
-
-      <data-view v-if="openDataView" :open-data-view="openDataView" :result="result" />
-
-      <!--suppress PointlessBooleanExpressionJS -->
-      <b-alert variant="danger"
-               dismissible
-               :show="!!unsupportedApiAlert"
-               @dismissed="unsupportedApiAlert=false">
-        The API spec is unsupported. Only Swagger 2.0 spec is supported at this point.
-      </b-alert>
-
-      <!--suppress PointlessBooleanExpressionJS -->
-      <b-alert variant="danger"
-               dismissible
-               :show="!!generalAlert"
-               @dismissed="generalAlert=false">
-        {{generalAlert}}
-      </b-alert>
-
-      <div role="tablist">
-        <api-item v-for="(value) in endpoints"
-                  @result="onResult"
-                  :key="value.id"
-                  :definition="value"
-                  :request-config="requestConfig">
-        </api-item>
-      </div>
+  <b-container>
+    <br>
+    <not-tableau-alert/>
+    <b-form @submit="onSubmit"
+            @reset="onReset"
+            autocomplete="off">
+      <b-form-group :label="`${specInfo.title} API Spec URL`"
+                    label-for="apiSpecUrl"
+                    label-size="sm"
+                    :description="`Enter the full URL to the ${specInfo.title} compatible API definition file.`">
+        <b-input-group>
+          <b-form-input id="apiSpecUrl"
+                        type="url"
+                        size="sm"
+                        :placeholder="`http://domain.com/api/${specInfo.specIdentifier}_spec`"
+                        v-model.trim="apiSpecUrl"
+                        autocomplete="off"
+                        required></b-form-input>
+          <b-input-group-button>
+            <b-button type="submit" :disabled="specLoading">Load API</b-button>
+            <b-button type="reset" variant="outline" :disabled="specLoading">&times;</b-button>
+          </b-input-group-button>
+        </b-input-group>
+      </b-form-group>
+    </b-form>
+    <div v-if="endpoints.length">
+      <url-auth :request-config.sync="requestConfig"/>
+      <custom-headers :request-headers.sync="requestConfig.headers"/>
     </div>
+    <hr>
 
+    <data-view v-if="openDataView" :open-data-view.sync="openDataView" :result="result"/>
 
-  </div>
+    <!--suppress PointlessBooleanExpressionJS -->
+    <b-alert variant="danger"
+             dismissible
+             :show="!!unsupportedApiAlert"
+             @dismissed="unsupportedApiAlert=false">
+      Invalid API Spec. Please ensure the URL given points to a {{specInfo.title}} compatible API specification.
+    </b-alert>
+
+    <!--suppress PointlessBooleanExpressionJS -->
+    <b-alert variant="danger"
+             dismissible
+             :show="!!generalAlert"
+             v-html="generalAlert"
+             @dismissed="generalAlert=false">
+    </b-alert>
+
+    <div role="tablist">
+      <api-item v-for="(value) in endpoints"
+                @result="onResult"
+                :key="value.id"
+                :definition="value"
+                :request-config="requestConfig">
+      </api-item>
+    </div>
+  </b-container>
 </template>
 
 <script>
@@ -70,8 +66,9 @@
   import CustomHeaders from './rest/CustomHeaders';
   import { setInterceptor } from '../utils/interceptor';
   import DataView from './rest/DataView';
-  import { merge } from 'lodash-es';
+  import { find, merge } from 'lodash-es';
   import NotTableauAlert from './NotTableauAlert';
+  import { supportedSpecs } from '../utils/specs';
 
   export default {
     components: {
@@ -79,7 +76,8 @@
       DataView,
       CustomHeaders,
       UrlAuth,
-      ApiItem },
+      ApiItem
+    },
     name: 'ApiExplorer',
     data() {
       let lastApiSpecUrl = localStorage.getItem('lastApiSpecUrl') || '';
@@ -115,7 +113,10 @@
         this.unsupportedApiAlert = false;
         this.generalAlert = false;
         this.specLoading = true;
-        this.$http.get(this.apiSpecUrl, { before: () => {} }).then(response => {
+        this.$http.get(this.apiSpecUrl, {
+          before: () => {
+          }
+        }).then(response => {
           this.apiSpec = response.body;
           this.specLoading = false;
           const { endpoints, baseUrl } = normalize(response.body);
@@ -133,7 +134,7 @@
           if (response.status > 0) {
             this.generalAlert = `HTTP ${response.status} - ${response.statusText}`;
           } else {
-            this.generalAlert = 'Request failed.';
+            this.generalAlert = 'Request failed. <a href="https://tableau.github.io/webdataconnector/docs/wdc_cors" target="_blank" style="color: inherit;"><small>Could be a CORS issue.</small></a>';
           }
         });
       },
@@ -142,9 +143,13 @@
         Object.assign(this.$data, this.$options.data());
       },
       onResult(result) {
-        console.log(result);
         this.openDataView = true;
         this.result = result;
+      }
+    },
+    computed: {
+      specInfo() {
+        return find(supportedSpecs, ['identifier', this.$route.params.type]);
       }
     },
     watch: {

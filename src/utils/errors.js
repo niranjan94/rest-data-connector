@@ -1,9 +1,7 @@
-import { isArray, isNumber, isObjectLike, isString } from 'lodash-es';
+import { isArray, isNumber, isObjectLike, isString, isEmpty } from 'lodash-es';
 
 /**
  * A recursive method to parse and retrieve an error string from a BE response
- * Since the BE seems to be having different response format for errors in
- * different endpoints
  *
  * Usage: import { getErrorMessage } from 'canopy-fresh/utils/errors';
  *
@@ -12,7 +10,7 @@ import { isArray, isNumber, isObjectLike, isString } from 'lodash-es';
  * @return {string}
  */
 export const getErrorMessage = (input, defaultError = null) => {
-  if (!input) {
+  if (!input || isEmpty(input)) {
     return defaultError;
   }
   if (isString(input) || isNumber(input)) {

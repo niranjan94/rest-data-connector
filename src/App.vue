@@ -6,13 +6,16 @@
     <footer class="footer">
       <div class="container">
         <span class="text-muted">
-          <i class="fas fa-globe"></i>&nbsp;
+          <font-awesome-icon :icon="['fas', 'globe']" />&nbsp;
           <a class="text-muted" href="https://niranjan.io" target="_blank">niranjan.io</a>
           <span class="separator">|</span>
-          <i class="fab fa-github"></i>&nbsp;
+          <font-awesome-icon :icon="['fab', 'github']" />&nbsp;
           <a class="text-muted" href="https://github.com/niranjan94/rest-data-connector" target="_blank">niranjan94/rest-data-connector</a>
           <span class="separator">|</span>
           Open sourced under the <a class="text-muted" href="https://www.gnu.org/licenses/gpl-3.0.txt" target="_blank">GNU General Public License v3.0</a>
+        </span>
+        <span style="float: right; text-decoration: none; font-style: italic; font-weight: 300;">
+          <a href="https://tableau.github.io/webdataconnector/docs/wdc_cors" class="text-muted" target="_blank">Psst! Facing CORS issues ?</a>
         </span>
       </div>
     </footer>
@@ -21,9 +24,10 @@
 
 <script>
   import NavBar from './components/NavBar';
+  import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
 
   export default {
-    components : { NavBar },
+    components : { NavBar, FontAwesomeIcon },
     name       : 'app'
   };
 </script>
@@ -70,6 +74,10 @@
 
   label {
     font-weight: 600 !important;
+  }
+
+  label span {
+    font-weight: 400 !important;
   }
 
   .separator {

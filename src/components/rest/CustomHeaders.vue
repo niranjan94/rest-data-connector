@@ -1,7 +1,6 @@
 <template>
   <div style="margin-top: 4px;">
-    <h6>Custom Headers</h6>
-
+    <b-form-group label="Custom Headers:" label-for="headers" label-size="sm"> </b-form-group>
     <b-row  v-for="(header, index) in headers" :key="index" style="margin-bottom: 8px;">
       <b-col md="4">
         <b-input-group left="Name" size="sm">

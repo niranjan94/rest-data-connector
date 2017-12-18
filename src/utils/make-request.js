@@ -2,12 +2,24 @@ import Vue from 'vue';
 
 const methodsWithBody = ['post', 'put', 'patch'];
 
-export const makeRequest = (method, url, parameters) => {
+/**
+ * Make a request to the specific URL with the given parameters
+ *
+ * @param method
+ * @param url
+ * @param parameters
+ * @param payload
+ * @param options
+ * @return {Promise<any>}
+ */
+export const makeRequest = (method, url, parameters, payload, options) => {
+  method = method.toLowerCase();
   parameters = parameters || [];
+  options = options || {};
+  if (!options.hasOwnProperty('params')) {
+    options.params = {};
+  }
   return new Promise((resolve, reject) => {
-    const options = {
-      params: {}
-    };
     for (const parameter of parameters) {
       if (parameter.value === '') {
         continue;
@@ -23,7 +35,7 @@ export const makeRequest = (method, url, parameters) => {
     }
     let responsePromise;
     if (methodsWithBody.includes(method)) {
-      responsePromise = Vue.http[method](url, null, options);
+      responsePromise = Vue.http[method](url, payload, options);
     } else {
       responsePromise = Vue.http[method](url, options);
     }

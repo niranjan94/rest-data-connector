@@ -24,6 +24,9 @@
   .navbar-brand > img {
     margin-right: 8px;
   }
+  .navbar-brand {
+    font-weight: 100 !important;
+  }
   .list-unstyled a {
     text-decoration: none;
   }

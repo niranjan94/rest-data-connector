@@ -1,12 +1,14 @@
 <template>
   <b-modal size="lg"
-           v-model="openDataView"
+           v-model="isModelOpen"
            @ok="onOkay"
            title="Export Data"
            :ok-disabled="!inTableau"
            :ok-title="inTableau ? 'Load into Tableau' : 'Run connector from tableau to load'">
-    <code>{{result.definition.endpoint}}</code> - <span class="text-muted">{{result.definition.summary}}</span>
-    <hr>
+    <div v-if="result.definition">
+      <code>{{result.definition.endpoint}}</code> - <span class="text-muted">{{result.definition.summary}}</span>
+      <hr>
+    </div>
     <tree-view :data="result.data" :options="options"/>
     <hr>
     <b-form @submit="onOkay">
@@ -36,16 +38,21 @@
 </template>
 
 <script>
-  import { keys, get } from 'lodash-es';
+  import { get, keys, isEmpty } from 'lodash-es';
   import { sendToTableau } from '../../utils/tableau/send';
 
   export default {
     name  : 'DataView',
     props : ['openDataView', 'result'],
     data() {
+      let connectorName = (this.result.definition ? this.result.definition.summary : this.result.url);
+      if (isEmpty(connectorName)) {
+        connectorName = this.$uuid.v4();
+      }
       return {
-        pathToExport  : '',
-        connectorName : this.result.definition.summary
+        isModelOpen  : !!this.openDataView,
+        pathToExport : '',
+        connectorName
       };
     },
     methods: {
@@ -82,7 +89,14 @@
         };
       }
     },
-    watch: {}
+    watch: {
+      isModelOpen(isModelOpen) {
+        this.$emit('update:openDataView', isModelOpen);
+      },
+      openDataView(openDataView) {
+        this.isModelOpen = !!openDataView;
+      }
+    }
   };
 </script>
 

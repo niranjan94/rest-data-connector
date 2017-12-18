@@ -2,16 +2,33 @@ import { json } from 'generate-schema';
 import { forOwn, camelCase, mapValues } from 'lodash-es';
 import store from '../../store';
 
+/**
+ * Map JSON schema types to Tableau data types
+ * @type {{number: string, string: string, boolean: string}}
+ */
 const schemaMap = {
   number  : tableau.dataTypeEnum.float,
   string  : tableau.dataTypeEnum.string,
   boolean : tableau.dataTypeEnum.bool
 };
 
+/**
+ * Get the property directly if supported by Tableau else serialize it to string
+ *
+ * @param object
+ * @param key
+ * @param propsSchema
+ * @return {string}
+ */
 const getNativeOrSerialized = (object, key, propsSchema) => {
   return schemaMap.hasOwnProperty(propsSchema[key].type) ? object : JSON.stringify(object);
 };
 
+/**
+ * Parse the connection data and get the init data
+ *
+ * @return {{connectorName, data, schema: output, propsSchema: {include: {type: string, items: {type: string}, minItems: number, uniqueItems: boolean}, exclude: {type: string, items: {type: string}, uniqueItems: boolean}, replace: {type: string, items: {type: string}, minItems: number, maxItems: number}}|items.properties|{include, exclude, replace}|{paths, patterns}|{}, dataKey}}
+ */
 const getInitData = () => {
   const { connectorName, data, dataKey } = JSON.parse(tableau.connectionData);
   const schema = json(connectorName, data);
@@ -25,6 +42,9 @@ const getInitData = () => {
   };
 };
 
+/**
+ * Initialize Tableau connector
+ */
 export const initTableau = () => {
   const connector = tableau.makeConnector();
 
@@ -34,6 +54,11 @@ export const initTableau = () => {
     callback();
   };
 
+  /**
+   * Get the Tableau schema based on the data retrieved
+   *
+   * @param callback
+   */
   connector.getSchema = function(callback) {
     const {
       connectorName, propsSchema, schema, dataKey
@@ -61,6 +86,12 @@ export const initTableau = () => {
     ]);
   };
 
+  /**
+   * Parse the request data into table rows.
+   *
+   * @param table
+   * @param callback
+   */
   connector.getData = function(table, callback) {
     const {
       data, schema, propsSchema, dataKey
@@ -93,7 +124,9 @@ export const initTableau = () => {
     table.appendRows(tableData);
     callback();
   };
+
   tableau.registerConnector(connector);
+
   setTimeout(() => {
     if (!window.inTableau) {
       store.commit('SET_NOT_IN_TABLEAU');

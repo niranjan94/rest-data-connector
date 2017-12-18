@@ -2,25 +2,38 @@
   <div>
     <b-row>
       <b-col md="6">
-        <b-form-group label="Base URL:"
+        <b-form-group :label="directMode ? 'Endpoint:' : 'Base URL:'"
                       label-for="baseUrl"
                       label-size="sm"
-                      description="Base URL to use for all API calls">
+                      :description="directMode ? 'The endpoint to make a request to' : 'Base URL to use for all API calls'">
           <b-form-input id="baseUrl"
                         type="url"
                         size="sm"
                         v-model.trim="config.baseUrl"
                         required
-                        placeholder="https://example.com/api/v1">
+                        :placeholder="directMode ? 'https://example.com/api/v1/flights.json' : 'https://example.com/api/v1'">
           </b-form-input>
         </b-form-group>
-
       </b-col>
-      <b-col md="6">
+      <b-col md="2" v-if="withMethodPicker">
+        <b-form-group label="Method:"
+                      label-for="method"
+                      label-size="sm"
+                      description="The request method to use">
+          <b-form-select id="method"
+                         size="sm"
+                         v-model="config.method"
+                         :options="methods"
+                         required>
+          </b-form-select>
+        </b-form-group>
+      </b-col>
+
+      <b-col :md="withMethodPicker ? 4 : 6">
         <b-form-group label="Authorization Mode:"
                       label-for="authorizationMode"
                       label-size="sm"
-                      description="Specify mode of authentication to use for all API requests">
+                      description="Specify mode of authentication to use for the API Request">
           <b-form-select id="authorizationMode"
                          size="sm"
                          v-model="config.authorizationMode"
@@ -28,7 +41,6 @@
                          required>
           </b-form-select>
         </b-form-group>
-
       </b-col>
     </b-row>
 
@@ -83,7 +95,7 @@
 
   export default {
     name  : 'UrlAuth',
-    props : ['requestConfig'],
+    props : ['requestConfig', 'directMode', 'withMethodPicker'],
     data() {
       return {
         config             : cloneDeep(this.requestConfig || {}),
@@ -93,7 +105,8 @@
           { text: 'OAuth Bearer Token', value: 'bearer' },
           { text: 'Basic Token', value: 'token' },
           { text: 'Expanded Token', value: 'expanded_token' }
-        ]
+        ],
+        methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
       };
     },
     watch: {
