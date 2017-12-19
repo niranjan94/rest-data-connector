@@ -1,6 +1,6 @@
 <h1><img src="https://res.cloudinary.com/niranjan94/image/upload/rdc_logo_dark.png" width="37" />&nbsp;REST Data Connector</h1>
 
-> A REST API Data Connector for Tableau with Swagger 2.0 support
+> A REST API Data Connector for Tableau with Swagger 2.0 and OpenApi 3.0 support
 
 <img src="https://res.cloudinary.com/niranjan94/image/upload/bo_1px_solid_rgb:d0d0d0/rdc_without_browser.png"/>
 

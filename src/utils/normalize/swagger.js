@@ -40,8 +40,12 @@ export const normalizeSwagger2p0 = data => {
       }
       return parameter;
     });
+    let endpoint = key.replace(base, '');
+    if (endpoint.trim() === '') {
+      endpoint = '/';
+    }
     endpoints.push({
-      endpoint   : key.replace(base, ''),
+      endpoint,
       base,
       parameters : get.parameters,
       summary    : get.summary,
@@ -52,6 +56,7 @@ export const normalizeSwagger2p0 = data => {
   const scheme = data.schemes.includes('https') ? 'https' : 'http';
 
   return {
+    rawSpec   : data,
     endpoints : sortBy(endpoints, ['endpoint']),
     baseUrl   : urlJoin(`${scheme}://${data.host}`, data.basePath, base)
   };

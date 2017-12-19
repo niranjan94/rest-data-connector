@@ -60,7 +60,7 @@
 </template>
 
 <script>
-  import { normalize } from '../utils/normalize';
+  import { getObjectFromBody, normalize } from '../utils/normalize';
   import ApiItem from './ApiItem';
   import UrlAuth from './rest/UrlAuth';
   import CustomHeaders from './rest/CustomHeaders';
@@ -117,16 +117,25 @@
           before: () => {
           }
         }).then(response => {
-          this.apiSpec = response.body;
-          this.specLoading = false;
-          const { endpoints, baseUrl } = normalize(response.body);
-          if (!endpoints) {
+          const body = getObjectFromBody(response.body);
+          if (!body) {
             this.unsupportedApiAlert = true;
             return;
           }
-          localStorage.setItem('lastApiSpecUrl', this.apiSpecUrl);
-          this.endpoints = endpoints;
-          this.requestConfig.baseUrl = baseUrl;
+          normalize(body, this.specInfo.specIdentifier)
+            .then(normalized => {
+              const { endpoints, baseUrl, rawSpec } = normalized;
+              this.apiSpec = rawSpec;
+              this.specLoading = false;
+              if (!endpoints) {
+                this.unsupportedApiAlert = true;
+                return;
+              }
+              localStorage.setItem('lastApiSpecUrl', this.apiSpecUrl);
+              this.endpoints = endpoints;
+              this.requestConfig.baseUrl = baseUrl;
+            })
+            .catch(console.error);
         }, response => {
           console.error(response);
           this.unsupportedApiAlert = false;
