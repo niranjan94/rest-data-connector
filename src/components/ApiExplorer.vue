@@ -124,6 +124,10 @@
           }
           normalize(body, this.specInfo.specIdentifier)
             .then(normalized => {
+              if (!normalized) {
+                this.unsupportedApiAlert = true;
+                return;
+              }
               const { endpoints, baseUrl, rawSpec } = normalized;
               this.apiSpec = rawSpec;
               this.specLoading = false;
