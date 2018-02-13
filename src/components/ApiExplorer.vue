@@ -69,6 +69,7 @@
   import { find, merge } from 'lodash-es';
   import NotTableauAlert from './NotTableauAlert';
   import { supportedSpecs } from '../utils/specs';
+  import Raven from 'raven-js';
 
   export default {
     components: {
@@ -139,8 +140,12 @@
               this.endpoints = endpoints;
               this.requestConfig.baseUrl = baseUrl;
             })
-            .catch(console.error);
+            .catch(e => {
+              console.error(e);
+              Raven.captureException(e);
+            });
         }, response => {
+          Raven.captureException(response);
           console.error(response);
           this.unsupportedApiAlert = false;
           this.specLoading = false;

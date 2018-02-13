@@ -55,6 +55,7 @@
 <script>
   import { makeRequest } from '../utils/make-request';
   import { getErrorMessage } from '../utils/errors';
+  import Raven from 'raven-js';
 
   export default {
     name  : 'ApiItem',
@@ -82,6 +83,7 @@
           })
           .catch(e => {
             console.error(e);
+            Raven.captureException(e);
             this.requestInProgress = false;
             this.$notify({
               type  : 'error',
