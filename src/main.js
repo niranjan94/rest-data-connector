@@ -6,6 +6,8 @@ import router from './router';
 import BootstrapVue from 'bootstrap-vue';
 import VueResource from 'vue-resource';
 import UUID from 'vue-uuid';
+import Raven from 'raven-js';
+import RavenVue from 'raven-js/plugins/vue';
 import Notifications from 'vue-notification';
 import TreeView from 'vue-json-tree-view';
 import { initTableau } from './utils/tableau/init';
@@ -16,6 +18,13 @@ import { faSpinner, faGlobe } from '@fortawesome/fontawesome-free-solid';
 import { faGithub } from '@fortawesome/fontawesome-free-brands';
 
 fontawesome.library.add(faGithub, faSpinner, faGlobe);
+
+if (process.env.RAVEN_DSN) {
+  Raven
+    .config(process.env.RAVEN_DSN)
+    .addPlugin(RavenVue, Vue)
+    .install();
+}
 
 Vue.config.productionTip = false;
 

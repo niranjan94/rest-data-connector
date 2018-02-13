@@ -73,6 +73,7 @@ module.exports = {
   },
   globals: {
     tableau: true,
-    Promise: true
+    Promise: true,
+    process: true
   }
 };
