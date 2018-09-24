@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { isFunction } from 'lodash-es';
+import { isFunction, isEmpty } from 'lodash-es';
 import urlJoin from 'url-join';
 
 /**
@@ -15,7 +15,9 @@ export const modifyRequest = (requestConfig, request) => {
 
   if (requestConfig.headers) {
     for (const header of requestConfig.headers) {
-      request.headers.set(header.name, header.value);
+      if (header.name && !isEmpty(header.name.trim())) {
+        request.headers.set(header.name, header.value);
+      }
     }
   }
 
