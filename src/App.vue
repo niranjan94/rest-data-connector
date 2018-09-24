@@ -14,9 +14,9 @@
           <span class="separator">|</span>
           Open sourced under the <a class="text-muted" href="https://www.gnu.org/licenses/gpl-3.0.txt" target="_blank">GNU General Public License v3.0</a>
         </span>
-        <span style="float: right; text-decoration: none; font-style: italic; font-weight: 300;">
-          <a href="https://tableau.github.io/webdataconnector/docs/wdc_cors" class="text-muted" target="_blank">Psst! Facing CORS issues ?</a>
-        </span>
+        <small class="text-muted" style="float: right; text-decoration: none; font-weight: 300;">
+          Version: {{version}}
+        </small>
       </div>
     </footer>
   </div>
@@ -24,10 +24,16 @@
 
 <script>
     import NavBar from './components/NavBar';
+    import packageJson from '../package';
 
     export default {
         components : { NavBar },
-        name       : 'app'
+        name       : 'app',
+        data() {
+          return {
+            version: packageJson.version
+          }
+        }
     };
 </script>
 

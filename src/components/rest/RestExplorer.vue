@@ -13,7 +13,7 @@
 
 <script>
   import NotTableauAlert from '../NotTableauAlert';
-  import { merge, pick } from 'lodash-es';
+  import { merge } from 'lodash-es';
   import UrlAuth from './UrlAuth';
   import CustomHeaders from './CustomHeaders';
   import DataView from './DataView';
@@ -104,12 +104,16 @@
             let text = `<strong>Reason:</strong> ${errorMessage}`;
 
             if (!errorMessage) {
-              text = JSON.stringify(pick(e, ['status', 'statusText', 'body']));
+              text = `
+<em>Code:</em> <strong>${e.status}</strong><br>
+<em>Status:</em> <strong>${JSON.stringify(e.statusText)}</strong><br>
+<em>Body:</em> <strong>${JSON.stringify(e.body)}</strong>
+`;
             }
 
             this.$notify({
               type  : 'error',
-              title : 'Request failed',
+              title : e.status <= 0 ? 'Request failed due to <a href="https://tableau.github.io/webdataconnector/docs/wdc_cors" target="_blank" style="color: inherit;">possible CORS error.</a>' : 'Request failed',
               text
             });
           });

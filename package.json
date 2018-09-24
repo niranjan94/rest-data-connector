@@ -1,9 +1,9 @@
 {
   "name": "rest-data-connector",
   "license": "GPL-3.0",
-  "version": "1.0.0",
   "description": "A REST API Data Connector for Tableau with Swagger 2.0 & OpenApi 3.0 support.",
   "author": "Niranjan Rajendran <me@niranjan.io>",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
