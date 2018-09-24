@@ -13,7 +13,7 @@
 
 <script>
   import NotTableauAlert from '../NotTableauAlert';
-  import { merge } from 'lodash-es';
+  import { merge, pick } from 'lodash-es';
   import UrlAuth from './UrlAuth';
   import CustomHeaders from './CustomHeaders';
   import DataView from './DataView';
@@ -88,10 +88,17 @@
           .catch(e => {
             console.error(e);
             this.requestInProgress = false;
+            let errorMessage = getErrorMessage(e.body);
+            let text = `<strong>Reason:</strong> ${errorMessage}`;
+
+            if (!errorMessage) {
+              text = JSON.stringify(pick(e, ['status', 'statusText', 'body']));
+            }
+
             this.$notify({
               type  : 'error',
               title : 'Request failed',
-              text  : `<strong>Reason:</strong> ${getErrorMessage(e.body)}`
+              text
             });
           });
       }
