@@ -21,7 +21,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(parameter) in definition.parameters">
+            <tr v-for="(parameter, index) in definition.parameters" :key="index">
               <th scope="row">{{parameter.name}}</th>
               <td>
                 <b-form-select v-if="parameter.enum"
@@ -74,7 +74,19 @@
         makeRequest(this.method, this.definition.endpoint, this.definition.parameters)
           .then(response => {
             this.requestInProgress = false;
+
+            const contentType = response.headers.get('content-type').split(';')[0].toLowerCase();
+
+            if (!['application/json', 'application/xml'].includes(contentType)) {
+              return this.$notify({
+                type  : 'error',
+                title : 'Unsupported response type ' + contentType,
+                text  : 'Only xml and json are supported'
+              });
+            }
+
             this.$emit('result', {
+              contentType,
               data          : response.body,
               definition    : this.definition,
               requestConfig : this.requestConfig,

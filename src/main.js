@@ -1,48 +1,52 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
-import App from './App';
-import router from './router';
+import App from './App.vue';
+
 import BootstrapVue from 'bootstrap-vue';
+import Notifications from 'vue-notification';
 import VueResource from 'vue-resource';
+import TreeView from 'vue-json-tree-view';
 import UUID from 'vue-uuid';
 import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
-import Notifications from 'vue-notification';
-import TreeView from 'vue-json-tree-view';
+
 import { initTableau } from './utils/tableau/init';
+
+import router from './router';
 import { sync } from 'vuex-router-sync';
 import store from './store';
-import fontawesome from '@fortawesome/fontawesome';
-import { faSpinner, faGlobe } from '@fortawesome/fontawesome-free-solid';
-import { faGithub } from '@fortawesome/fontawesome-free-brands';
 
-fontawesome.library.add(faGithub, faSpinner, faGlobe);
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faSpinner, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
-if (process.env.RAVEN_DSN) {
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+if (process.env.VUE_APP_RAVEN_DSN) {
   Raven
-    .config(process.env.RAVEN_DSN)
+    .config(process.env.VUE_APP_RAVEN_DSN)
     .addPlugin(RavenVue, Vue)
     .install();
 }
 
-Vue.config.productionTip = false;
+library.add(faGithub, faSpinner, faGlobe);
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 sync(store, router);
 
-Vue.use(Notifications);
-Vue.use(UUID);
 Vue.use(VueResource);
-Vue.use(BootstrapVue);
+Vue.use(Notifications);
 Vue.use(TreeView);
+Vue.use(UUID);
+Vue.use(BootstrapVue);
 
-/* eslint-disable no-new */
+Vue.config.productionTip = false;
+
 new Vue({
-  el         : '#app',
   router,
   store,
-  template   : '<App/>',
-  components : { App }
-});
+  render: h => h(App)
+}).$mount('#app');
 
 initTableau();

@@ -3,7 +3,7 @@
     <b-form-group label="Custom Headers:" label-for="headers" label-size="sm"> </b-form-group>
     <b-row  v-for="(header, index) in headers" :key="index" style="margin-bottom: 8px;">
       <b-col md="4">
-        <b-input-group left="Name" size="sm">
+        <b-input-group prepend="Name" size="sm">
           <b-form-input type="text"
                         size="sm"
                         v-model.trim="header.name"
@@ -13,7 +13,7 @@
 
       </b-col>
       <b-col md="7">
-        <b-input-group left="Value" size="sm">
+        <b-input-group prepend="Value" size="sm">
           <b-form-input type="text"
                         size="sm"
                         v-model.trim="header.value"
@@ -31,7 +31,7 @@
     <b-form @submit="onSubmit">
       <b-row>
         <b-col md="4">
-          <b-input-group left="Name" size="sm">
+          <b-input-group prepend="Name" size="sm">
             <b-form-input type="text"
                           size="sm"
                           v-model.trim="tempName"
@@ -41,7 +41,7 @@
 
         </b-col>
         <b-col md="7">
-          <b-input-group left="Value" size="sm">
+          <b-input-group prepend="Value" size="sm">
 
 
             <b-form-input type="text"

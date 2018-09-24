@@ -34,13 +34,14 @@ export const modifyRequest = (requestConfig, request) => {
     case 'token':
       request.headers.set('Authorization', `Token ${requestConfig.token.trim()}`);
       break;
-    case 'expanded_token':
-      let headerValue = `Token token="${requestConfig.password}"`;
-      if (requestConfig.username && requestConfig.username.trim() !== '') {
-        headerValue = `Token token="${requestConfig.password.trim()}", username="${requestConfig.username.trim()}"`;
-      }
-      request.headers.set('Authorization', headerValue);
-      break;
+    case 'expanded_token': {
+        let headerValue = `Token token="${requestConfig.password}"`;
+        if (requestConfig.username && requestConfig.username.trim() !== '') {
+            headerValue = `Token token="${requestConfig.password.trim()}", username="${requestConfig.username.trim()}"`;
+        }
+        request.headers.set('Authorization', headerValue);
+        break;
+    }
   }
 };
 

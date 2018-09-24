@@ -10,7 +10,7 @@ const methodsWithBody = ['post', 'put', 'patch'];
  * @param parameters
  * @param payload
  * @param options
- * @return {Promise<any>}
+ * @return {Promise}
  */
 export const makeRequest = (method, url, parameters, payload, options) => {
   method = method.toLowerCase();

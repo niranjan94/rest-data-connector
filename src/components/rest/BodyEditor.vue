@@ -24,7 +24,7 @@
       <b-form-group :label="this.body.type === 'query' ? 'Query Parameters:' : 'Form data key-value pairs:'" label-for="headers" label-size="sm"> </b-form-group>
       <b-row  v-for="(item, index) in body.value" :key="index" style="margin-bottom: 8px;">
         <b-col md="4">
-          <b-input-group left="Name" size="sm">
+          <b-input-group prepend="Name" size="sm">
             <b-form-input type="text"
                           size="sm"
                           v-model.trim="item.name"
@@ -34,7 +34,7 @@
 
         </b-col>
         <b-col md="7">
-          <b-input-group left="Value" size="sm">
+          <b-input-group prepend="Value" size="sm">
             <b-form-input type="text"
                           size="sm"
                           v-model.trim="item.value"
@@ -52,7 +52,7 @@
       <b-form @submit="onSubmit">
         <b-row>
           <b-col md="4">
-            <b-input-group left="Name" size="sm">
+            <b-input-group prepend="Name" size="sm">
               <b-form-input type="text"
                             size="sm"
                             v-model.trim="tempName"
@@ -62,7 +62,7 @@
 
           </b-col>
           <b-col md="7">
-            <b-input-group left="Value" size="sm">
+            <b-input-group prepend="Value" size="sm">
 
 
               <b-form-input type="text"

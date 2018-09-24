@@ -14,7 +14,6 @@
 <script>
   import NotTableauAlert from '../NotTableauAlert';
   import { merge, pick } from 'lodash-es';
-  import { xml2js } from 'xml-js';
   import UrlAuth from './UrlAuth';
   import CustomHeaders from './CustomHeaders';
   import DataView from './DataView';
@@ -80,31 +79,18 @@
             this.requestInProgress = false;
 
             const contentType = response.headers.get('content-type').split(';')[0].toLowerCase();
-            let data = {};
 
-            switch (contentType) {
-              case 'application/json':
-                data = response.body;
-                break;
-              case 'application/xml':
-                data = xml2js(response.body, {
-                  compact           : true,
-                  ignoreCdata       : true,
-                  ignoreDoctype     : true,
-                  ignoreInstruction : true,
-                  ignoreDeclaration : true
-                });
-                break;
-              default:
-                return this.$notify({
-                  type  : 'error',
-                  title : 'Unsupported response type ' + contentType,
-                  text  : 'Only xml and json are supported'
-                });
+            if (!['application/json', 'application/xml'].includes(contentType)) {
+              return this.$notify({
+                type  : 'error',
+                title : 'Unsupported response type ' + contentType,
+                text  : 'Only xml and json are supported'
+              });
             }
 
             this.result = {
-              data,
+              contentType,
+              data: response.body,
               definition    : null,
               requestConfig : this.requestConfig,
               url           : this.requestConfig.baseUrl

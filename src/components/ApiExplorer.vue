@@ -9,18 +9,17 @@
                     label-for="apiSpecUrl"
                     label-size="sm"
                     :description="`Enter the full URL to the ${specInfo.title} compatible API definition file.`">
-        <b-input-group>
+        <b-input-group size="sm">
           <b-form-input id="apiSpecUrl"
                         type="url"
-                        size="sm"
                         :placeholder="`http://domain.com/api/${specInfo.specIdentifier}_spec`"
                         v-model.trim="apiSpecUrl"
                         autocomplete="off"
                         required></b-form-input>
-          <b-input-group-button>
-            <b-button type="submit" :disabled="specLoading">Load API</b-button>
-            <b-button type="reset" variant="outline" :disabled="specLoading">&times;</b-button>
-          </b-input-group-button>
+          <b-input-group-append>
+            <b-btn type="submit" :disabled="specLoading">Load API</b-btn>
+            <b-btn type="reset" variant="outline" :disabled="specLoading">&times;</b-btn>
+          </b-input-group-append>
         </b-input-group>
       </b-form-group>
     </b-form>

@@ -23,19 +23,15 @@
 </template>
 
 <script>
-  import NavBar from './components/NavBar';
-  import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
+    import NavBar from './components/NavBar';
 
-  export default {
-    components : { NavBar, FontAwesomeIcon },
-    name       : 'app'
-  };
+    export default {
+        components : { NavBar },
+        name       : 'app'
+    };
 </script>
 
 <style>
-
-  @import "bootstrap/dist/css/bootstrap.css";
-  @import "bootstrap-vue/dist/bootstrap-vue.css";
 
   #app {
 
@@ -72,7 +68,7 @@
     margin-bottom: 4px;
   }
 
-  label {
+  label:not(.custom-control-label) {
     font-weight: 600 !important;
   }
 
