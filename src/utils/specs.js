@@ -6,7 +6,7 @@
 export const supportedSpecs = [
   {
     title       : 'Generic REST API',
-    description : 'Connect to any REST API Service that provides a JSON (JavaScript Object Notation) response.',
+    description : 'Connect to any REST API Service that provides a JSON (JavaScript Object Notation) or an XML (eXtensible Markup Language) response.',
     link        : '/rest-explorer',
     identifier  : 'generic_rest',
     enabled     : true
