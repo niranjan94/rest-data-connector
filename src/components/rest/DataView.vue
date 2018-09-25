@@ -25,14 +25,27 @@
       <b-form-group label="Path to export:"
                     label-for="pathToExport"
                     label-size="sm"
-                    description="Enter the <a href='http://goessner.net/articles/JsonPath/'>JSONPath</a> to load into Tableau (eg. <code>$.data</code>, <code>$.meta</code>). Leave blank to load everything. <br> Preview the data below before proceeding.">
-        <b-form-input id="pathToExport"
-                      type="text"
-                      size="sm"
-                      v-model="pathToExport">
-        </b-form-input>
+                    :description="pathDescription + ' <br> Preview the data below before proceeding.'">
+
+
+        <b-input-group size="sm">
+          <b-form-input id="pathToExport"
+                        type="text"
+                        v-model="pathToExport">
+          </b-form-input>
+          <b-input-group-append>
+            <b-btn :pressed="useJsonPath" variant="info" v-on:click="onPathTypeToggle">JSON Path</b-btn>
+            <b-btn :pressed="!useJsonPath" variant="info" v-on:click="onPathTypeToggle">Dot-notation</b-btn>
+          </b-input-group-append>
+        </b-input-group>
+
       </b-form-group>
 
+      <b-form-group label="Export options" label-size="sm" label-for="exportOptions">
+        <b-form-checkbox-group id="exportOptions" name="exportOptions" v-model="exportOptions">
+          <b-form-checkbox value="flattenObject">Flatten Object</b-form-checkbox>
+        </b-form-checkbox-group>
+      </b-form-group>
 
       <tree-view :data="dataToExport" :options="dataToExportTreeViewOptions"/>
 
@@ -54,10 +67,10 @@
 </template>
 
 <script>
-  import { isEmpty, keys } from 'lodash-es';
+  import { isEmpty, keys, get } from 'lodash-es';
   import { sendToTableau } from '../../utils/tableau/send';
   import { xml2js } from 'xml-js';
-  import { collapseKey } from '../../utils/parsing';
+  import { collapseKey, collapseObject } from '../../utils/parsing';
   import jp from 'jsonpath';
 
   export default {
@@ -71,14 +84,20 @@
       return {
         isModelOpen: !!this.openDataView,
         pathToExport: '',
+        useJsonPath: true,
         connectorName,
-        parsingOptions: ['ignoreAttributes', 'collapseText']
+        parsingOptions: ['ignoreAttributes', 'collapseText'],
+        exportOptions: []
       };
     },
     methods: {
       onOkay(e) {
         e.preventDefault();
-        const cleanedPath = this.pathToExport.trim();
+        let cleanedPath = this.pathToExport.trim();
+        if (!this.useJsonPath) {
+          cleanedPath = cleanedPath.replace(/^root\./, '');
+        }
+
         if(!this.dataToExport) {
           this.$notify({
             type: 'error',
@@ -88,9 +107,15 @@
           return;
         }
         sendToTableau(this.dataToExport, this.connectorName, cleanedPath);
+      },
+      onPathTypeToggle() {
+        this.useJsonPath = !this.useJsonPath;
       }
     },
     computed: {
+      pathDescription() {
+        return this.useJsonPath ? 'Enter the <a href=\'http://goessner.net/articles/JsonPath/\'>JSONPath</a> to load into Tableau (eg. <code>$.data</code>, <code>$.meta</code>). Leave blank to load everything.': 'Enter the path to load into Tableau (eg. <code>root.data</code>, <code>root.meta</code>, <code>root</code>)';
+      },
       parsedData() {
         switch (this.result.contentType) {
           case 'application/json':
@@ -115,18 +140,30 @@
         return {};
       },
       dataToExport() {
-        const cleanedPath = this.pathToExport.trim();
+        let cleanedPath = this.pathToExport.trim();
+        if (!this.useJsonPath) {
+          cleanedPath = cleanedPath.replace(/^root\./, '');
+        }
         let data = this.parsedData;
         if(cleanedPath !== '') {
-          data = jp.query(data, cleanedPath);
+          if (this.useJsonPath) {
+            data = jp.query(data, cleanedPath);
+          } else {
+            data = get(data, cleanedPath);
+          }
         }
+
+        if (this.exportOptions.includes('flattenObject')) {
+          data = collapseObject(data);
+        }
+
         return data;
       },
       inTableau() {
         return this.$store.state.inTableau;
       },
       treeViewOptions() {
-        if(keys(this.parsedData) > 10 || this.parsedData.length > 10) {
+        if(!this.parsedData || keys(this.parsedData) > 10 || this.parsedData.length > 10) {
           return {
             maxDepth: 0
           };
@@ -136,7 +173,7 @@
         };
       },
       dataToExportTreeViewOptions() {
-        if(keys(this.dataToExport) > 10 || this.dataToExport.length > 10) {
+        if(!this.dataToExport || keys(this.dataToExport) > 10 || this.dataToExport.length > 10) {
           return {
             maxDepth: 0
           };
