@@ -54,7 +54,9 @@ export const normalizeSwagger2p0 = data => {
   });
 
   const scheme = data.schemes.includes('https') ? 'https' : 'http';
-
+  if (!data.basePath) {
+    data.basePath = base
+  }
   return {
     rawSpec   : data,
     endpoints : sortBy(endpoints, ['endpoint']),
