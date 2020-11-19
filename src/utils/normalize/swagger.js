@@ -53,7 +53,7 @@ export const normalizeSwagger2p0 = data => {
     });
   });
 
-  const scheme = data.schemes.includes('https') ? 'https' : 'http';
+    const scheme = (data.schemes != undefined && data.schemes.includes('https')) ? 'https' : 'http';
   if (!data.basePath) {
     data.basePath = base
   }
