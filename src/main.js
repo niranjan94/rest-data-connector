@@ -33,6 +33,8 @@ if (process.env.VUE_APP_RAVEN_DSN) {
 library.add(faGithub, faSpinner, faGlobe);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
+console.log(library.hasOwnProperty("dummyProp"));
+
 sync(store, router);
 
 Vue.use(VueResource);
