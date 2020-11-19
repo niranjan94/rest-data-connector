@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import Vue from "vue";
 
-const methodsWithBody = ['post', 'put', 'patch'];
+const methodsWithBody = ["post", "put", "patch"];
 
 /**
  * Make a request to the specific URL with the given parameters
@@ -16,19 +16,19 @@ export const makeRequest = (method, url, parameters, payload, options) => {
   method = method.toLowerCase();
   parameters = parameters || [];
   options = options || {};
-  if (!options.hasOwnProperty('params')) {
+  if (!options.hasOwnProperty("params")) {
     options.params = {};
   }
   return new Promise((resolve, reject) => {
     for (const parameter of parameters) {
-      if (parameter.value === '') {
+      if (parameter.value === "") {
         continue;
       }
       switch (parameter.in) {
-        case 'path':
+        case "path":
           url = url.replace(`{${parameter.name}}`, parameter.value);
           break;
-        case 'query':
+        case "query":
           options.params[parameter.name] = parameter.value;
           break;
       }

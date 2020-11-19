@@ -1,7 +1,7 @@
-import { normalizeSwagger2p0 } from './normalize/swagger';
-import { convertOpenApiToSwagger } from './normalize/converters/openapi3_to_swagger2';
-import { isPlainObject, isString } from 'lodash-es';
-import { safeLoad } from 'js-yaml';
+import { normalizeSwagger2p0 } from "./normalize/swagger";
+import { convertOpenApiToSwagger } from "./normalize/converters/openapi3_to_swagger2";
+import { isPlainObject, isString } from "lodash-es";
+import { safeLoad } from "js-yaml";
 
 /**
  * Normalize the API spec to a common Swagger 2.0 spec
@@ -10,16 +10,15 @@ import { safeLoad } from 'js-yaml';
  * @param sourceType
  * @return {*}
  */
-export const normalize = async(data, sourceType) => {
-  if (data.hasOwnProperty('swagger') && data.swagger === '2.0') {
+export const normalize = async (data, sourceType) => {
+  if (data.hasOwnProperty("swagger") && data.swagger === "2.0") {
     return normalizeSwagger2p0(data);
   }
-  if (sourceType === 'openapi_3') {
+  if (sourceType === "openapi_3") {
     return normalizeSwagger2p0(convertOpenApiToSwagger(data));
   }
   return null;
 };
-
 
 /**
  * Get an object representation of a body that could be either object, string (json/yaml)
@@ -27,7 +26,7 @@ export const normalize = async(data, sourceType) => {
  * @param body
  * @return {*}
  */
-export const getObjectFromBody = body => {
+export const getObjectFromBody = (body) => {
   if (!body) {
     return null;
   }
@@ -41,7 +40,9 @@ export const getObjectFromBody = body => {
     } catch (ignored) {
       try {
         parsedBody = JSON.parse(body);
-      } catch (ignored) { /* ignored */  }
+      } catch (ignored) {
+        /* ignored */
+      }
     }
     return parsedBody;
   }

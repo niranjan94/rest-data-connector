@@ -1,4 +1,4 @@
-import { camelCase } from 'lodash-es';
+import { camelCase } from "lodash-es";
 
 /**
  * Set the connector data and send the connector info to Tableau
@@ -8,9 +8,9 @@ import { camelCase } from 'lodash-es';
  * @param cleanedPath
  */
 export const sendToTableau = (data, connectorName, cleanedPath) => {
-  let dataKey = camelCase(cleanedPath || 'dataValue');
-  if (!dataKey || dataKey === '') {
-    dataKey = 'dataValue';
+  let dataKey = camelCase(cleanedPath || "dataValue");
+  if (!dataKey || dataKey === "") {
+    dataKey = "dataValue";
   }
   tableau.connectionData = JSON.stringify({ data, connectorName, dataKey });
   tableau.connectionName = connectorName;

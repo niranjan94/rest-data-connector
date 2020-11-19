@@ -1,15 +1,15 @@
-import { json } from 'generate-schema';
-import { forOwn, camelCase, mapValues } from 'lodash-es';
-import store from '../../store';
+import { json } from "generate-schema";
+import { forOwn, camelCase, mapValues } from "lodash-es";
+import store from "../../store";
 
 /**
  * Map JSON schema types to Tableau data types
  * @type {{number: string, string: string, boolean: string}}
  */
 const schemaMap = {
-  number  : tableau.dataTypeEnum.float,
-  string  : tableau.dataTypeEnum.string,
-  boolean : tableau.dataTypeEnum.bool
+  number: tableau.dataTypeEnum.float,
+  string: tableau.dataTypeEnum.string,
+  boolean: tableau.dataTypeEnum.bool,
 };
 
 /**
@@ -21,7 +21,9 @@ const schemaMap = {
  * @return {string}
  */
 const getNativeOrSerialized = (object, key, propsSchema) => {
-  return schemaMap.hasOwnProperty(propsSchema[key].type) ? object : JSON.stringify(object);
+  return schemaMap.hasOwnProperty(propsSchema[key].type)
+    ? object
+    : JSON.stringify(object);
 };
 
 /**
@@ -34,11 +36,16 @@ const getInitData = () => {
   const schema = json(connectorName, data);
   const fallbackObject = {};
   fallbackObject[dataKey] = schema.items;
-  const propsSchema = schema.type === 'array'
-    ? (schema.items.properties || fallbackObject)
-    : schema.properties;
+  const propsSchema =
+    schema.type === "array"
+      ? schema.items.properties || fallbackObject
+      : schema.properties;
   return {
-    connectorName, data, schema, propsSchema, dataKey
+    connectorName,
+    data,
+    schema,
+    propsSchema,
+    dataKey,
   };
 };
 
@@ -48,8 +55,8 @@ const getInitData = () => {
 export const initTableau = () => {
   const connector = tableau.makeConnector();
 
-  connector.init = function(callback) {
-    store.commit('SET_IN_TABLEAU');
+  connector.init = function (callback) {
+    store.commit("SET_IN_TABLEAU");
     window.inTableau = true;
     callback();
   };
@@ -59,30 +66,28 @@ export const initTableau = () => {
    *
    * @param callback
    */
-  connector.getSchema = function(callback) {
-    const {
-      connectorName, propsSchema, schema, dataKey
-    } = getInitData();
+  connector.getSchema = function (callback) {
+    const { connectorName, propsSchema, schema, dataKey } = getInitData();
     let columns = [];
     if (propsSchema) {
       forOwn(propsSchema, (value, key) => {
         columns.push({
-          id       : key,
-          dataType : schemaMap[value.type] || tableau.dataTypeEnum.string
+          id: key,
+          dataType: schemaMap[value.type] || tableau.dataTypeEnum.string,
         });
       });
     } else {
       columns.push({
-        id       : dataKey,
-        dataType : schemaMap[schema.type] || tableau.dataTypeEnum.string
+        id: dataKey,
+        dataType: schemaMap[schema.type] || tableau.dataTypeEnum.string,
       });
     }
     callback([
       {
-        id    : camelCase(connectorName),
-        alias : connectorName,
-        columns
-      }
+        id: camelCase(connectorName),
+        alias: connectorName,
+        columns,
+      },
     ]);
   };
 
@@ -92,17 +97,15 @@ export const initTableau = () => {
    * @param table
    * @param callback
    */
-  connector.getData = function(table, callback) {
-    const {
-      data, schema, propsSchema, dataKey
-    } = getInitData();
+  connector.getData = function (table, callback) {
+    const { data, schema, propsSchema, dataKey } = getInitData();
 
     let tableData = [];
     if (propsSchema) {
-      if (schema.type === 'array') {
+      if (schema.type === "array") {
         for (const object of data) {
           let row = {};
-          if (schema.items.type === 'object') {
+          if (schema.items.type === "object") {
             forOwn(object, (value, key) => {
               row[key] = getNativeOrSerialized(value, key, propsSchema);
             });
@@ -112,9 +115,11 @@ export const initTableau = () => {
           tableData.push(row);
         }
       } else {
-        tableData.push(mapValues(data, (value, key) => {
-          return getNativeOrSerialized(value, key, propsSchema);
-        }));
+        tableData.push(
+          mapValues(data, (value, key) => {
+            return getNativeOrSerialized(value, key, propsSchema);
+          })
+        );
       }
     } else {
       const obj = {};
@@ -129,7 +134,7 @@ export const initTableau = () => {
 
   setTimeout(() => {
     if (!window.inTableau) {
-      store.commit('SET_NOT_IN_TABLEAU');
+      store.commit("SET_NOT_IN_TABLEAU");
     }
   }, 100);
 };

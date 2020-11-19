@@ -1,4 +1,4 @@
-import { isArray, isNumber, isObjectLike, isString, isEmpty } from 'lodash-es';
+import { isArray, isNumber, isObjectLike, isString, isEmpty } from "lodash-es";
 
 /**
  * A recursive method to parse and retrieve an error string from a BE response
@@ -17,7 +17,8 @@ export const getErrorMessage = (input, defaultError = null) => {
     let error = input;
     try {
       error = JSON.parse(input);
-    } catch (ignored) { /* ignored */
+    } catch (ignored) {
+      /* ignored */
     }
     if (isString(error) || isNumber(isNumber)) {
       return error;
@@ -26,9 +27,9 @@ export const getErrorMessage = (input, defaultError = null) => {
   }
 
   if (!isArray(input) && isObjectLike(input)) {
-    input = input.error ? input.error : (input.message ? input.message : input);
+    input = input.error ? input.error : input.message ? input.message : input;
   } else if (isArray(input)) {
-    return input.join('. ');
+    return input.join(". ");
   }
 
   return getErrorMessage(input);
