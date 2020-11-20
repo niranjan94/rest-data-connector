@@ -1,5 +1,5 @@
-import { forOwn, keys, sortBy } from 'lodash-es';
-import urlJoin from 'url-join';
+import { forOwn, keys, sortBy } from "lodash-es";
+import urlJoin from "url-join";
 
 /**
  * Get the shared sub-string from an array of strings
@@ -7,9 +7,12 @@ import urlJoin from 'url-join';
  * @param array
  * @return {string}
  */
-export const sharedStart = array => {
+export const sharedStart = (array) => {
   let A = array.concat().sort(),
-      a1 = A[0], a2 = A[A.length - 1], L = a1.length, i = 0;
+    a1 = A[0],
+    a2 = A[A.length - 1],
+    L = a1.length,
+    i = 0;
   while (i < L && a1.charAt(i) === a2.charAt(i)) i++;
   return a1.substring(0, i);
 };
@@ -20,46 +23,49 @@ export const sharedStart = array => {
  * @param data
  * @return {{endpoints: *, baseUrl: *}}
  */
-export const normalizeSwagger2p0 = data => {
+export const normalizeSwagger2p0 = (data) => {
   let endpoints = [];
   const base = sharedStart(keys(data.paths));
   forOwn(data.paths, (value, key) => {
-    if (!value.hasOwnProperty('get')) {
+    if (!value.hasOwnProperty("get")) {
       return;
     }
     const get = value.get;
-    get.parameters = (get.parameters || []).map(parameter => {
-      parameter.value = parameter.default || '';
+    get.parameters = (get.parameters || []).map((parameter) => {
+      parameter.value = parameter.default || "";
       switch (parameter.type) {
-        case 'integer':
-        case 'float':
-          parameter.htmlType = 'number';
+        case "integer":
+        case "float":
+          parameter.htmlType = "number";
           break;
         default:
-          parameter.htmlType = 'text';
+          parameter.htmlType = "text";
       }
       return parameter;
     });
-    let endpoint = key.replace(base, '');
-    if (endpoint.trim() === '') {
-      endpoint = '/';
+    let endpoint = key.replace(base, "");
+    if (endpoint.trim() === "") {
+      endpoint = "/";
     }
     endpoints.push({
       endpoint,
       base,
-      parameters : get.parameters,
-      summary    : get.summary,
-      id         : get.operationId
+      parameters: get.parameters,
+      summary: get.summary,
+      id: get.operationId,
     });
   });
 
-    const scheme = (data.schemes != undefined && data.schemes.includes('https')) ? 'https' : 'http';
+  const scheme =
+    data.schemes != undefined && data.schemes.includes("https")
+      ? "https"
+      : "http";
   if (!data.basePath) {
-    data.basePath = base
+    data.basePath = base;
   }
   return {
-    rawSpec   : data,
-    endpoints : sortBy(endpoints, ['endpoint']),
-    baseUrl   : urlJoin(`${scheme}://${data.host}`, data.basePath, base)
+    rawSpec: data,
+    endpoints: sortBy(endpoints, ["endpoint"]),
+    baseUrl: urlJoin(`${scheme}://${data.host}`, data.basePath, base),
   };
 };
