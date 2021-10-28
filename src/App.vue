@@ -4,7 +4,7 @@
     <nav-bar/>
     <router-view class="router-view"/>
     <footer class="footer">
-      <div class="container">
+      <div class="container" style="font-size: smaller">
         <span class="text-muted">
           <font-awesome-icon :icon="['fas', 'globe']" />&nbsp;
           <a class="text-muted" href="https://niranjan.io" target="_blank">niranjan.io</a>
@@ -63,7 +63,7 @@
 
   .router-view {
     margin-top: 56px;
-    padding-bottom: 20px;
+    padding-bottom: 65px;
   }
 
   * {
