@@ -1,6 +1,6 @@
-import Vue from 'vue';
-import { isFunction, isEmpty } from 'lodash-es';
-import urlJoin from 'url-join';
+import Vue from "vue";
+import { isFunction, isEmpty } from "lodash-es";
+import urlJoin from "url-join";
 
 /**
  * Modify a request to match a specific request config
@@ -9,7 +9,11 @@ import urlJoin from 'url-join';
  * @param request
  */
 export const modifyRequest = (requestConfig, request) => {
-  if (requestConfig.baseUrl && requestConfig.baseUrl.trim() !== '' && !request.url.startsWith('http')) {
+  if (
+    requestConfig.baseUrl &&
+    requestConfig.baseUrl.trim() !== "" &&
+    !request.url.startsWith("http")
+  ) {
     request.url = urlJoin(requestConfig.baseUrl.trim(), request.url.trim());
   }
 
@@ -22,25 +26,34 @@ export const modifyRequest = (requestConfig, request) => {
   }
 
   switch (requestConfig.authorizationMode) {
-    case 'basic':
+    case "basic":
       request.headers.set(
-        'Authorization',
-        'Basic ' + btoa(requestConfig.username.trim() + ':' + requestConfig.password.trim())
+        "Authorization",
+        "Basic " +
+          btoa(
+            requestConfig.username.trim() + ":" + requestConfig.password.trim()
+          )
       );
       break;
-    case 'bearer':
-      request.headers.set('Authorization', `Bearer ${requestConfig.token.trim()}`);
+    case "bearer":
+      request.headers.set(
+        "Authorization",
+        `Bearer ${requestConfig.token.trim()}`
+      );
       break;
-    case 'token':
-      request.headers.set('Authorization', `Token ${requestConfig.token.trim()}`);
+    case "token":
+      request.headers.set(
+        "Authorization",
+        `Token ${requestConfig.token.trim()}`
+      );
       break;
-    case 'expanded_token': {
-        let headerValue = `Token token="${requestConfig.password}"`;
-        if (requestConfig.username && requestConfig.username.trim() !== '') {
-            headerValue = `Token token="${requestConfig.password.trim()}", username="${requestConfig.username.trim()}"`;
-        }
-        request.headers.set('Authorization', headerValue);
-        break;
+    case "expanded_token": {
+      let headerValue = `Token token="${requestConfig.password}"`;
+      if (requestConfig.username && requestConfig.username.trim() !== "") {
+        headerValue = `Token token="${requestConfig.password.trim()}", username="${requestConfig.username.trim()}"`;
+      }
+      request.headers.set("Authorization", headerValue);
+      break;
     }
   }
 };
@@ -50,12 +63,12 @@ export const modifyRequest = (requestConfig, request) => {
  *
  * @param requestConfig
  */
-export const setInterceptor = requestConfig => {
+export const setInterceptor = (requestConfig) => {
   if (requestConfig) {
-    localStorage.setItem('lastRequestConfig', JSON.stringify(requestConfig));
+    localStorage.setItem("lastRequestConfig", JSON.stringify(requestConfig));
   }
   requestConfig = requestConfig || {};
-  Vue.http.interceptor.before = function(request, next) {
+  Vue.http.interceptor.before = function (request, next) {
     if (isFunction(request.before)) {
       request.before.call(this, request);
     } else {
