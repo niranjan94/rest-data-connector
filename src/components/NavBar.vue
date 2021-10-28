@@ -3,7 +3,7 @@
     <b-navbar type="dark" variant="dark" fixed="top">
       <b-container class="d-flex justify-content-between">
         <router-link to="/" class="navbar-brand">
-          <img src="/static/branding/network_white.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+          <img src="/branding/network_white.svg" width="30" height="30" class="d-inline-block align-top" alt="">
           REST Data Connector
         </router-link>
       </b-container>
