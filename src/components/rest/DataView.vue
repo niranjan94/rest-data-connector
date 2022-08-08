@@ -118,8 +118,10 @@
       },
       parsedData() {
         switch (this.result.contentType) {
+          case 'text/json':
           case 'application/json':
             return this.result.data;
+          case 'text/xml':
           case 'application/xml': {
             let object = xml2js(this.result.data, {
               compact           : true,
@@ -131,6 +133,7 @@
               nativeType        : true,
               trim              : true,
             });
+            console.log(object);
             if (this.parsingOptions.includes('collapseText')) {
               object = collapseKey(object, '_text');
             }

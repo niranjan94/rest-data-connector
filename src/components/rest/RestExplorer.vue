@@ -21,6 +21,7 @@
   import { makeRequest } from '../../utils/make-request';
   import { modifyRequest } from '../../utils/interceptor';
   import { getErrorMessage } from '../../utils/errors';
+  import { supportedContentTypes } from '@/config';
 
   export default {
     components: {
@@ -80,7 +81,7 @@
 
             const contentType = response.headers.get('content-type').split(';')[0].toLowerCase();
 
-            if (!['application/json', 'application/xml'].includes(contentType)) {
+            if (!supportedContentTypes.includes(contentType)) {
               return this.$notify({
                 type  : 'error',
                 title : 'Unsupported response type ' + contentType,
