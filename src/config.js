@@ -1,1 +1,6 @@
-export const supportedContentTypes = ['application/json', 'application/xml', 'text/json', 'text/xml'];
+export const supportedContentTypes = [
+  "application/json",
+  "application/xml",
+  "text/json",
+  "text/xml",
+];
